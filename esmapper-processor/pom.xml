@@ -1,0 +1,190 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>esmapper-processor</artifactId>
+  <groupId>com.esmo.mapper</groupId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <mapper.version>1.0.0</mapper.version>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.esmo.mapper</groupId>
+      <artifactId>esmapper-common</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <!--		<dependency>-->
+    <!--			<groupId>com.sun</groupId>-->
+    <!--			<artifactId>tools</artifactId>-->
+    <!--			<version>1.0</version>-->
+    <!--			<scope>system</scope>-->
+    <!--			<systemPath>${java.home}/../lib/tools.jar</systemPath>-->
+    <!--			<optional>true</optional>-->
+    <!--		</dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.apache.commons</groupId>-->
+    <!--      <artifactId>commons-text</artifactId>-->
+    <!--      <version>1.9</version>-->
+    <!--    </dependency>-->
+
+
+
+    <!--		&lt;!&ndash; https://mvnrepository.com/artifact/javax.enterprise/cdi-api &ndash;&gt;-->
+    <!--		<dependency>-->
+    <!--			<groupId>javax.enterprise</groupId>-->
+    <!--			<artifactId>cdi-api</artifactId>-->
+    <!--			<version>2.0</version>-->
+    <!--		</dependency>-->
+    <!--		<dependency>-->
+    <!--			<groupId>org.springframework</groupId>-->
+    <!--			<artifactId>spring-context</artifactId>-->
+    <!--		</dependency>-->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>my-process-resources</id>
+<!--            <phase>process-resources</phase>-->
+<!--            <phase>prepare-package</phase>-->
+            <phase>process-classes</phase>  <!-- after compilation !!! -->
+<!--            <phase>validate</phase>-->
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources-final</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>jdk8</id>
+      <dependencies>
+        <!-- https://mvnrepository.com/artifact/jdk.tools/jdk.tools -->
+        <dependency>
+          <groupId>jdk.tools</groupId>
+          <artifactId>jdk.tools</artifactId>
+          <version>1.8.0</version>
+          <scope>provided</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--          <groupId>com.sun</groupId>-->
+<!--          <artifactId>tools</artifactId>-->
+<!--          <version>1.0</version>-->
+<!--          <scope>system</scope>-->
+<!--          <systemPath>${java.home}/../lib/tools.jar</systemPath>-->
+<!--          <optional>true</optional>-->
+<!--        </dependency>-->
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>esmapper-processor-add-jdk8-source</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/main/java-jdk8</source>
+                  </sources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>esmapper-processor-add-jdk8-test-source</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/test/java-jdk8</source>
+                    <source>src/main/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>jdk11</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>esmapper-processor-add-jdk11-source</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/main/java-jdk11plus</source>
+                  </sources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>esmapper-processor-add-jdk11-test-source</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/test/java-jdk11plus</source>
+                    <source>src/main/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
